@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CKEditor Sample</title>
+
+  <script src="https://cdn.ckeditor.com/4.5.11/full-all/ckeditor.js"></script>
+</head>
+<body>
+<h1>CKEditor Sample</h1>
+
+<div>
+  <textarea id="editor"></textarea>
+</div>
+
+<script type="text/javascript">
+  CKEDITOR.replace('editor', {
+    toolbarGroups: [{
+      name: 'mode'
+    },
+      {
+        name: 'basicstyles'
+      }
+    ],
+    on: {
+      pluginsLoaded: function () {
+        var editor = this,
+          config = editor.config;
+
+        editor.ui.addRichCombo('my-combo', {
+          label: 'Insert Variable',
+          title: 'Insert Variable',
+          toolbar: 'basicstyles,0',
+
+          panel: {
+            css: [CKEDITOR.skin.getPath('editor')].concat(config.contentsCss),
+            multiSelect: false,
+            attributes: {
+              'aria-label': 'Insert Variable'
+            }
+          },
+          init: function () {
+            this.startGroup('My Dropdown Group #1');
+            this.add("foo", 'Foo!');
+            this.add('bar', 'Bar!');
+
+            this.startGroup('My Dropdown Group #2');
+            this.add('ping', 'Ping!');
+            this.add('pong', 'Pong!');
+          },
+          onClick: function (value) {
+            editor.focus();
+            editor.fire('saveSnapshot');
+            console.log('onClick');
+            editor.insertHtml('<span>' + value + '</span>', 'unfiltered_html');
+            editor.fire('saveSnapshot');
+          }
+        });
+      },
+      contentDom: function () {
+        this.editable().on('click', function (evt) {
+          var target = evt.data.getTarget();
+
+          if (target.is('span')) {
+            console.log('clicked span!');
+          }
+        });
+      }
+    }
+  });
+</script>
+</body>
+</html>

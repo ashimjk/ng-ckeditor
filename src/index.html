@@ -6,8 +6,65 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://cdn.ckeditor.com/4.5.11/full-all/ckeditor.js"></script>
 </head>
 <body>
-  <app-root></app-root>
+<app-root></app-root>
 </body>
+
+<script type="text/javascript">
+  CKEDITOR.plugins.add('placeholder_select',
+    {
+      requires: ['richcombo'],
+      init: function (editor) {
+        //  array of placeholders to choose from that'll be inserted into the editor
+        var placeholders = [];
+
+        // init the default config - empty placeholders
+        var defaultConfig = {
+          format: '[[%placeholder%]]',
+          placeholders: []
+        };
+
+        // merge defaults with the passed in items
+        var config = CKEDITOR.tools.extend(defaultConfig, editor.config.placeholder_select || {}, true);
+
+        // run through an create the set of items to use
+        for (var i = 0; i < config.placeholders.length; i++) {
+          // get our potentially custom placeholder format
+          var placeholder = config.format.replace('%placeholder%', config.placeholders[i]);
+          placeholders.push([placeholder, config.placeholders[i], config.placeholders[i]]);
+        }
+
+        // add the menu to the editor
+        editor.ui.addRichCombo('placeholder_select',
+          {
+            label: 'Insert placeholder',
+            title: 'Insert placeholder',
+            voiceLabel: 'Insert placeholder',
+            className: 'cke_format',
+            multiSelect: false,
+            panel:
+              {
+                css: [].concat(editor.config.contentsCss).concat(CKEDITOR.skin.getPath('editor')),
+                voiceLabel: editor.lang.panelVoiceLabel
+              },
+
+            init: function () {
+              this.startGroup("Insert placeholder");
+              for (var i in placeholders) {
+                this.add(placeholders[i][0], placeholders[i][1], placeholders[i][2]);
+              }
+            },
+
+            onClick: function (value) {
+              editor.focus();
+              editor.fire('saveSnapshot');
+              editor.insertHtml('<span>' + value + '</span>');
+              editor.fire('saveSnapshot');
+            }
+          });
+      }
+    });
+</script>
 </html>
