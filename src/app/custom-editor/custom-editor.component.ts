@@ -1,9 +1,12 @@
-import {Component} from "@angular/core";
+import {Component} from '@angular/core';
+
+// declare const CKEDITOR: any;
 
 @Component({
-  selector: 'app-editor',
+  selector: 'app-custom-editor',
   template: `
-    <div appChangeEditorOptions>
+    <div appChangeEditorOptions
+         appAjkPlaceHolder>
       <ckeditor
         [(ngModel)]="content"
         [config]="config"
@@ -21,27 +24,33 @@ import {Component} from "@angular/core";
         debounce="500">
       </ckeditor>
     </div>
-  `
+  `,
+  styleUrls: ['./custom-editor.component.css']
 })
-export class EditorComponent {
+export class CustomEditorComponent {
 
-  content: string = '<p>Some html</p>';
+  content: string = '<p>content<br><br><br><br><br><br><br><br></p>';
+
   config: any = {
     allowedContent: true,
-    toolbar: [['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', 'Link', '-', 'CreatePlaceholder', 'placeholder_select']],
-    removePlugins: 'elementspath',
-    resize_enabled: false,
-    extraPlugins: 'font,divarea,richcombo,placeholder,placeholder_select',
-    contentsCss: ["body {font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;}"],
+    toolbar: [['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', 'Link', '-',
+      'ajkPlaceHolder']],
+    // removePlugins: 'elementspath',
+    // resize_enabled: false,
+    extraPlugins: 'font,divarea,richcombo,stylesheetparser,ajkPlaceHolder',
+    contentsCss: ["body {font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;background-color: red;}"],
     autoParagraph: false,
+    format_h1: {element: 'div', attributes: {'class': 'editorTitle1'}},
     enterMode: 2,
     language: 'en',
-    placeholder_select: {
-      placeholders: ["ashim", "khadka"],
-      format: '{{%placeholder%}}'
+    lang: {
+      pathName: './'
+    },
+    placeHolderSelect: {
+      placeHolders: ["ram", "shyam", "hari"],
+      format: '%placeHolder%'
     }
   };
-
 
   onChange($event: any) {
     console.log('Method: onChange()');
@@ -55,7 +64,7 @@ export class EditorComponent {
     console.log('Method: onReady()');
 
     let editor = $event.editor;
-    console.log('editor.editable(): ', editor.editable());
+    // console.log('editor.editable(): ', editor.editable());
 
     // editor.editing.view.on('click', (evt, data ) => {
     //   console.log('evt: ', evt);
@@ -66,7 +75,9 @@ export class EditorComponent {
       var target = event.data.getTarget();
 
       if (target.is('span')) {
+        // editor.openDialog('ajkPlaceHolder');
         console.log('clicked span!');
+        // editor.editable().findOne( 'span' ).remove();
       }
     });
   }
@@ -98,4 +109,5 @@ export class EditorComponent {
   onDrop($event: DragEvent) {
     console.log('Method: onDrop()');
   }
+
 }

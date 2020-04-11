@@ -23,12 +23,12 @@ export class ChangeEditorOptionsDirective {
     );
 
     CKEDITOR.on('dialogDefinition', (event) => {
-      if ('placeholder' === event.data.name) {
+      if ('ajkPlaceHolder' === event.data.name) {
         const input = event.data.definition.getContents('info').get('name');
         const dialog = event.data.definition;
+        console.log('dialog: ', dialog);
         input.type = 'select';
         input.items = [
-          ['None', ''],
           ['First Name', 'first_name'],
           ['Last Name', 'last_name'],
           ['Link', 'link'],
@@ -37,7 +37,7 @@ export class ChangeEditorOptionsDirective {
     });
 
     CKEDITOR.on('click', (event) => {
-      console.log('event: ', event);
+      console.log('changeEditor event: ', event);
     });
   }
 
